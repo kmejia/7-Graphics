@@ -1,0 +1,42 @@
+#torus
+push
+#place coors it to center
+translate
+250 250 0
+xrotate
+30
+torus
+0 0 70 120
+#legs1 and 2
+pop
+push
+translate
+250 300 0
+yrotate
+70
+xrotate
+50
+box
+-200 50 10 50 50 200
+box
+420 50 10 50 50 200
+#legs 4 and 3
+pop
+push
+translate
+250 200 0
+yrotate
+-250
+xrotate
+-50
+#zrotate
+#45
+box
+300 30 30 50 50 200
+box
+300 120 -110 50 50 200
+sphere
+800 150 61
+save
+line.png
+quit

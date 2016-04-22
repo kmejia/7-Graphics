@@ -1,2 +1,2 @@
-# 7-Graphics
-mdl
+# 6-Graphics
+stack homework
