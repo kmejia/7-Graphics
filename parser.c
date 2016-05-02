@@ -283,5 +283,3 @@ void parse_file ( char * filename,
   fclose(f);
   //printf("END PARSE\n");
 }
-
-  
