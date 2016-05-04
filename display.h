@@ -7,4 +7,5 @@ void save_ppm( screen s, char *file);
 void save_extension( screen s, char *file);
 void display( screen s);
 
+color change_color( int i );
 #endif

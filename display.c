@@ -13,6 +13,51 @@ for red, green and blue respectively
 #include "ml6.h"
 #include "display.h"
 
+color change_color( int i ) {
+  
+  color c;
+  i = i % 7;
+
+  switch( i ) {
+    
+  case 0:
+    c.red = 255;
+    c.green = 255; 
+    c.blue = 255;
+    break;
+  case 1:
+    c.red = 255;
+    c.green = 0; 
+    c.blue = 0;
+    break;
+  case 2:
+    c.red = 0;
+    c.green = 255; 
+    c.blue = 0;
+    break;
+  case 3:
+    c.red = 0;
+    c.green = 0; 
+    c.blue = 255;
+    break;
+  case 4:
+    c.red = 255;
+    c.green = 255; 
+    c.blue = 0;
+    break;
+  case 5:
+    c.red = 255;
+    c.green = 0; 
+    c.blue = 255;
+    break;
+  case 6:
+    c.red = 0;
+    c.green = 255; 
+    c.blue = 255;
+    break;
+  }
+  return c;
+}
 
 /*======== void plot() ==========
 Inputs:   screen s
@@ -126,7 +171,7 @@ Will display the screen s on your monitor
 jdyrlandweaver
 ====================*/
 void display( screen s) {
-  int x, i;
+   int x, i;
   char *fname = ".tmp.png";
   save_extension(s, fname);
   i = fork();

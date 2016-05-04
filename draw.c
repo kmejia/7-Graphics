@@ -91,7 +91,7 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
   jdyrlandweaver
   ====================*/
 void add_sphere( struct matrix * points, 
-		 double cx, double cy, double r, 
+		 double cx, double cy, double cz, double r, 
 		 int step ) {
 
   struct matrix * temp;
@@ -107,7 +107,7 @@ void add_sphere( struct matrix * points,
   
   temp = new_matrix( 4, num_points);
   //generate the points on the sphere
-  generate_sphere( temp, cx, cy, r, step );
+  generate_sphere( temp, cx, cy, cz, r, step );
 
   int latStop, longStop, latStart, longStart;
   latStart = 0;
@@ -170,7 +170,7 @@ void add_sphere( struct matrix * points,
   jdyrlandweaver
   ====================*/
 void generate_sphere( struct matrix * points, 
-		      double cx, double cy, double r, 
+		      double cx, double cy, double cz, double r, 
 		      int step ) {
 
 
@@ -191,7 +191,7 @@ void generate_sphere( struct matrix * points,
       y = r * sin( M_PI * circ ) *
 	cos( 2 * M_PI * rot ) + cy;
       z = r * sin( M_PI * circ ) *
-	sin( 2 * M_PI * rot );
+	sin( 2 * M_PI * rot ) + cz;
 
       add_point( points, x, y, z);
     }
@@ -199,130 +199,6 @@ void generate_sphere( struct matrix * points,
 }    
 
 
-/*======== void add_sphere() ==========
-  Inputs:   struct matrix * points
-            double cx
-	    double cy
-	    double r
-	    double step  
-  Returns: 
-
-  adds all the points for a sphere with center 
-  (cx, cy) and radius r.
-
-  should call generate_sphere to create the
-  necessary points
-
-  jdyrlandweaver
-  ====================
-void add_sphere( struct matrix * points, 
-		 double cx, double cy, double r, 
-		 int step ) {
-
-  struct matrix * temp;
-  int lat, longt;
-  int index;
-  int num_steps, num_points;
-  double px0, px1, px2, px3;
-  double py0, py1, py2, py3;
-  double pz0, pz1, pz2, pz3;
-
-  num_steps = MAX_STEPS / step;
-  num_points = num_steps * (num_steps + 1);
-  
-  temp = new_matrix( 4, num_points );
-  //generate the points on the sphere
-  generate_sphere( temp, cx, cy, r, step );
-
-  int latStop, longStop, latStart, longStart;
-  latStart = 0;
-  latStop = num_steps;
-  longStart = 0;
-  longStop = 2;//num_steps;
-
-  num_steps++;
-  
-  for ( lat = latStart; lat < latStop; lat++ ) {
-    for ( longt = longStart; longt < longStop; longt++ ) {
-
-      index = lat * num_steps + longt;
-
-      px0 = temp->m[0][ index ];
-      py0 = temp->m[1][ index ];
-      pz0 = temp->m[2][ index ];
-      
-      px1 = temp->m[0][ (index + num_steps) % num_points ];
-      py1 = temp->m[1][ (index + num_steps) % num_points ];
-      pz1 = temp->m[2][ (index + num_steps) % num_points ];
-
-      px3 = temp->m[0][ index + 1 ];
-      py3 = temp->m[1][ index + 1 ];
-      pz3 = temp->m[2][ index + 1 ];
-
-      if (longt != longStop - 1) {
-	px2 = temp->m[0][ (index + num_steps + 1) % num_points ];
-	py2 = temp->m[1][ (index + num_steps + 1) % num_points ];
-	pz2 = temp->m[2][ (index + num_steps + 1) % num_points ];
-      }
-      else {
-	px2 = temp->m[0][ (index + 1) % num_points ];
-	py2 = temp->m[1][ (index + 1) % num_points ];
-	pz2 = temp->m[2][ (index + 1) % num_points ];
-      }
-
-      if (longt != 0)
-	add_polygon( points, px0, py0, pz0, px1, py1, pz1, px2, py2, pz2 );
-      if (longt != longStop - 1)
-	add_polygon( points, px2, py2, pz2, px3, py3, pz3, px0, py0, pz0 );
-    }
-  }
-  free_matrix(temp);
-}
-
-/*======== void generate_sphere() ==========
-  Inputs:   struct matrix * points
-            double cx
-	    double cy
-	    double r
-	    double step  
-  Returns: 
-
-  Generates all the points along the surface of a 
-  sphere with center (cx, cy) and radius r
-
-  Adds these points to the matrix parameter
-
-  03/22/12 11:30:26
-  jdyrlandweaver
-  ====================
-void generate_sphere( struct matrix * points, 
-		      double cx, double cy, double r, 
-		      int step ) {
-
-  int circle, rotation;
-  double x, y, z, circ, rot;
-
-  int rotStart = step * 0;
-  int rotStop = MAX_STEPS;
-  int circStart = step * 0;
-  int circStop = MAX_STEPS;
-  
-  for ( rotation = rotStart; rotation < rotStop; rotation += step ) {
-    rot = (double)rotation / MAX_STEPS;
-    for ( circle = circStart; circle < circStop; circle+= step ) {
-
-      circ = (double)circle / MAX_STEPS;
-      x = r * cos( M_PI * circ ) + cx;
-      y = r * sin( M_PI * circ ) *
-	cos( 2 * M_PI * rot ) + cy;
-      z = r * sin( M_PI * circ ) *
-	sin( 2 * M_PI * rot );
-
-      add_point( points, x, y, z);
-    }
-  }
-}    
-*/
 /*======== void add_torus() ==========
   Inputs:   struct matrix * points
             double cx
@@ -342,7 +218,7 @@ void generate_sphere( struct matrix * points,
   jdyrlandweaver
   ====================*/
 void add_torus( struct matrix * points, 
-		double cx, double cy, double r1, double r2, 
+		double cx, double cy, double cz, double r1, double r2, 
 		int step ) {
 
   struct matrix * temp;
@@ -354,7 +230,7 @@ void add_torus( struct matrix * points,
 
   temp = new_matrix( 4, num_steps * num_steps );
   //generate the points on the torus
-  generate_torus( temp, cx, cy, r1, r2, step );
+  generate_torus( temp, cx, cy, cz, r1, r2, step );
   int num_points = temp->lastcol;
 
   int latStop, longtStop, latStart, longStart;
@@ -428,7 +304,7 @@ void add_torus( struct matrix * points,
   jdyrlandweaver
   ====================*/
 void generate_torus( struct matrix * points, 
-		     double cx, double cy, double r1, double r2, 
+		     double cx, double cy, double cz, double r1, double r2, 
 		     int step ) {
 
   double x, y, z, circ, rot;
@@ -449,7 +325,7 @@ void generate_torus( struct matrix * points,
 	( r1 * cos( 2 * M_PI * circ ) + r2 ) + cx;
       y = r1 * sin( 2 * M_PI * circ ) + cy;
       z = sin( 2 * M_PI * rot ) *
-	( r1 * cos( 2 * M_PI * circ ) + r2 );
+	( r1 * cos( 2 * M_PI * circ ) + r2 ) + cz;
 
       add_point( points, x, y, z );
     }
