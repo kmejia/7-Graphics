@@ -59,14 +59,92 @@ void my_main( int polygons ) {
   struct matrix *tmp;
   struct stack *s;
   screen t;
-  color g;
-  
+  color g;//red colour
+  g.red=255;
+  g.green=1;
+  g.blue =2;
   s = new_stack();
   tmp = new_matrix(4, 1000);
   clear_screen( t );
-
+  
+  tmp2 = new_matrix(4,1);//transform
   for (i=0;i<lastop;i++) {  
     switch (op[i].opcode) {
+    case POP:
+      pop(s);
+      break;
+    case PUSH:
+      push(s);
+      break;
+    case MOVE:
+      tmp = make_translate(op[i].op.move.d[0],op[i].op.move.d[1],
+			   op[i].op.move.d[2]);
+      matrix_mult(s->data[s->top], tmp);
+      copy_matrix(tmp, s->data[s->top]);
+      break;
+    case SCALE:
+      tmp = make_scale(op[i].op.scale.d[0],op[i].op.scale.d[1],
+		       op[i].op.scale.d[2]);
+      matrix_mult(s->data[s->top], tmp);
+      copy_matrix(tmp, s->data[s->top]);
+      break;   
+    case ROTATE:
+      xval = op[i].op.rotate.axis;
+      yval = op[i].op.rotate.degrees;
+      yval = yval * (M_PI / 180);
+      if (xval == 0) {
+	tmp = make_rotX(yval);
+	matrix_mult(s->data[s->top], tmp);
+	copy_matrix(tmp, s->data[s->top]);
+      } else if (xval == 1) {
+	tmp = make_rotY(yval);
+	matrix_mult(s->data[s->top], tmp);
+	copy_matrix(tmp, s->data[s->top]);
+      } else {
+	tmp = make_rotZ(yval);
+	matrix_mult(s->data[s->top], tmp);
+	copy_matrix(tmp, s->data[s->top]);
+      }
+      break; 
+    case BOX:
+      add_box(tmp2, op[i].op.box.d0[0],op[i].op.box.d0[1],
+	      op[i].op.box.d0[2],
+	      op[i].op.box.d1[0],op[i].op.box.d1[1],
+	      op[i].op.box.d1[2]);
+      matrix_mult(s->data[s->top], tmp2);
+      draw_polygons(tmp2, t, g);
+      ident(tmp2);
+      break;
+      
+    case SPHERE:
+      add_sphere(tmp2,  op[i].op.sphere.d[0],op[i].op.sphere.d[1],
+		 op[i].op.sphere.d[2],
+		 op[i].op.sphere.r, 5);
+      matrix_mult(s->data[s->top], tmp2);
+      draw_polygons(tmp2, t, g);
+      ident(tmp2);
+      break;
+      
+    case TORUS:
+      add_torus(tmp2, op[i].op.torus.d[0],op[i].op.torus.d[1],
+		op[i].op.torus.d[2],
+		op[i].op.torus.r0,op[i].op.torus.r1, 5);
+      matrix_mult(s->data[s->top], tmp2);
+      draw_polygons(tmp2, t, g);
+      ident(tmp2);
+      break;
+    case LINE;
+    add_edge(tmp,op[i].op.line.p0[0],op[i].op.line.p0[1],op[i].op.line.p0[2], op[i].op.line.p1[0], op[i].op.line.p1[1], op[i].op.line.p1[2]);
+    matrix_mult(s->data[ s->top ],tmp);
+    draw_lines(tmp,t,g);
+    tmp->lastcol = 0;
+    break;
+    case SAVE;
+    save_extension(t,op[i].op.save.p->name);
+    break;
+    case DISPLAY;
+    display(t);
+    break;
     }
   }
 }
