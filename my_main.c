@@ -67,7 +67,7 @@ void my_main( int polygons ) {
   tmp = new_matrix(4, 1000);
   clear_screen( t );
   
-  tmp2 = new_matrix(4,1);//transform
+  struct matrix *tmp2 = new_matrix(4,1);//transform
   for (i=0;i<lastop;i++) {  
     switch (op[i].opcode) {
     case POP:
@@ -133,16 +133,16 @@ void my_main( int polygons ) {
       draw_polygons(tmp2, t, g);
       ident(tmp2);
       break;
-    case LINE;
+    case LINE:
     add_edge(tmp,op[i].op.line.p0[0],op[i].op.line.p0[1],op[i].op.line.p0[2], op[i].op.line.p1[0], op[i].op.line.p1[1], op[i].op.line.p1[2]);
     matrix_mult(s->data[ s->top ],tmp);
     draw_lines(tmp,t,g);
     tmp->lastcol = 0;
     break;
-    case SAVE;
+    case SAVE:
     save_extension(t,op[i].op.save.p->name);
     break;
-    case DISPLAY;
+    case DISPLAY:
     display(t);
     break;
     }
